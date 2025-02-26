@@ -6,11 +6,15 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using avaloniaExample.ViewModels;
 using avaloniaExample.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace avaloniaExample;
 
 public partial class App : Application
 {
+    public static IServiceProvider ?ServiceProvider { get; private set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -18,6 +22,7 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        InitializeServiceProvider();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -28,7 +33,6 @@ public partial class App : Application
                 DataContext = new MainWindowViewModel(),
             };
         }
-
         base.OnFrameworkInitializationCompleted();
     }
 
@@ -43,5 +47,11 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+
+    private static void InitializeServiceProvider()
+    {
+        var services = new ServiceCollection();
+        ServiceProvider = services.BuildServiceProvider();
     }
 }
