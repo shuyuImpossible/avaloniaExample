@@ -11,5 +11,7 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://avaloniaExample/Assets/Icons.axaml" />
+        <StyleInclude Source="avares://avaloniaExample/Templates/ContentExample.axaml" />
     </Application.Styles>
 </Application>
