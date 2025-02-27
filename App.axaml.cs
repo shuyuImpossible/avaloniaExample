@@ -97,6 +97,7 @@ public partial class App : Application
         services.AddSingleton<LoginPageViewModel>();
         services.AddSingleton<SecretViewModel>();
         services.AddTransient<ChartsPageViewModel>();
+        services.AddSingleton<InsertDragAndDropPageViewModel>();
 
         services.AddSingleton<MainWindow>();
         services.AddTransient<HomePageView>();
@@ -110,6 +111,7 @@ public partial class App : Application
         services.AddTransient<LoginPageView>();
         services.AddTransient<SecretView>();
         services.AddTransient<ChartsPageView>();
+        services.AddTransient<InsertDragAndDropPageView>();
         ServiceProvider = services.BuildServiceProvider();
     }
 }

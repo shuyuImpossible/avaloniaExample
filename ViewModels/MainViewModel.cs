@@ -38,6 +38,7 @@ public partial class MainViewModel : ViewModelBase
         new ListItemTemplate(typeof(DragAndDropPageViewModel), "TapDoubleRegular", "Drang And Drop"),
         new ListItemTemplate(typeof(LoginPageViewModel), "LockRegular", "Login Form"),
         new ListItemTemplate(typeof(ChartsPageViewModel), "PollRegular", "Charts"),
+        new ListItemTemplate(typeof(InsertDragAndDropPageViewModel), "TapDoubleRegular", "Insert Drang And Drop"),
     ];
 
     public MainViewModel() : this(new WeakReferenceMessenger()) { }
