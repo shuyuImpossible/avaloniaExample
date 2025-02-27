@@ -17,7 +17,7 @@
              DisplayMode="CompactInline"
              OpenPaneLength="300"
              Background="#1e1e1e"
-             PaneBackground="#1e1e1e">
+             PaneBackground="#FFFFFF">
     <SplitView.Pane>
       <StackPanel Orientation="Vertical"
                   Spacing="5"
@@ -52,7 +52,7 @@
 
     <SplitView.Content>
       <Border CornerRadius="12 0 0 0"
-              Background="#2d2d2d">
+              Background="#F0F0F0">
         <TransitioningContentControl Content="{Binding CurrentPage}" />
       </Border>
     </SplitView.Content>

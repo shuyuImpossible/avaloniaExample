@@ -4,7 +4,7 @@
   <Style Selector="controls|ContentExample">
     <Setter Property="Template">
       <ControlTemplate>
-        <Border Background="#393939"
+        <Border Background="#FFFFFF"
                 CornerRadius="3"
                 Padding="15">
           <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding Template}" />

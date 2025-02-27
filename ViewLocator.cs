@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using avaloniaExample.ViewModels;
 using System.Collections.Generic;
-using avaloniaExample.ViewModels;
 using avaloniaExample.ViewModels.SplitViewPane;
 using avaloniaExample.Views;
 
