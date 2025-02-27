@@ -12,6 +12,7 @@ public partial class DragAndDropPageView : UserControl
 {
     private Point _ghostPosition = new(0,0);
     private readonly Point _mouseOffset = new(-5, -5);
+    private bool _isInDragDrop = false; 
 
     public DragAndDropPageView()
     {
@@ -19,6 +20,10 @@ public partial class DragAndDropPageView : UserControl
 
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
+
+        this.PointerMoved += OnPointerMoved;
+        MainContainer.PointerEntered += OnPointerEntered;
+        MainContainer.PointerExited += OnPointerExited;
     }
 
     // OnInitialized didn't work for some reason
@@ -45,18 +50,22 @@ public partial class DragAndDropPageView : UserControl
 
         if (DataContext is not DragAndDropPageViewModel vm) return;
         vm.StartDrag(taskItem);
+        _isInDragDrop = true;
 
         GhostItem.IsVisible = true;
 
         var dragData = new DataObject();
         dragData.Set(DragAndDropPageViewModel.CustomFormat, taskItem);
         var result = await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+        _isInDragDrop = false;
         Console.WriteLine($"DragAndDrop result: {result}");
         GhostItem.IsVisible = false;
     }
 
     private void DragOver(object? sender, DragEventArgs e)
     {
+        Console.WriteLine($"DragOver current time {DateTime.Now}");
+
         var currentPosition = e.GetPosition(MainContainer);
 
         var offsetX = currentPosition.X - _ghostPosition.X;
@@ -90,4 +99,46 @@ public partial class DragAndDropPageView : UserControl
         if (DataContext is not DragAndDropPageViewModel vm) return;
         vm.Drop(taskItem, (e.Source as Control)?.Name);
     }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        // Get the mouse position relative to MainContainer
+        var mousePosition = e.GetPosition(MainContainer);
+
+        // Check if the mouse position is within the bounds of MainContainer
+        if (mousePosition.X >= 0 && mousePosition.X <= MainContainer.Bounds.Width &&
+            mousePosition.Y >= 0 && mousePosition.Y <= MainContainer.Bounds.Height)
+        {
+            Console.WriteLine($"Mouse is inside MainContainer current time {DateTime.Now}");
+            // if (_isInDragDrop)
+            // {
+            //     GhostItem.IsVisible = true;
+            // }
+        }
+        else
+        {
+            Console.WriteLine($"Mouse is outside MainContainer current time {DateTime.Now}");
+            // if (_isInDragDrop)
+            // {
+            //     GhostItem.IsVisible = false;
+            // }
+        }
+    }
+
+    private void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (_isInDragDrop)
+        {
+            GhostItem.IsVisible = true;
+        }
+    }
+
+    private void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (_isInDragDrop)
+        {
+            GhostItem.IsVisible = false;
+        }
+    }
+
 }
