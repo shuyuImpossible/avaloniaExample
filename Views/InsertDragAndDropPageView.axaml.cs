@@ -50,14 +50,14 @@ public partial class InsertDragAndDropPageView : UserControl
         var offsetY = mousePos.Y - ghostPos.Y + _mouseOffset.X;
         GhostItem.RenderTransform = new TranslateTransform(offsetX, offsetY);
 
-        if (DataContext is not DragAndDropPageViewModel vm) return;
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
         vm.StartDrag(taskItem);
         _isInDragDrop = true;
 
         GhostItem.IsVisible = true;
 
         var dragData = new DataObject();
-        dragData.Set(DragAndDropPageViewModel.CustomFormat, taskItem);
+        dragData.Set(InsertDragAndDropPageViewModel.CustomFormat, taskItem);
         var result = await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
         _isInDragDrop = false;
         Console.WriteLine($"DragAndDrop result: {result}");
@@ -77,8 +77,8 @@ public partial class InsertDragAndDropPageView : UserControl
 
         // set drag cursor icon
         e.DragEffects = DragDropEffects.Move;
-        if (DataContext is not DragAndDropPageViewModel vm) return;
-        var data = e.Data.Get(DragAndDropPageViewModel.CustomFormat);
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
+        var data = e.Data.Get(InsertDragAndDropPageViewModel.CustomFormat);
         if (data is not TaskItem taskItem) return;
         if (!vm.IsDestinationValid(taskItem, (e.Source as Control)?.Name))
         {
@@ -90,7 +90,7 @@ public partial class InsertDragAndDropPageView : UserControl
     {
         Console.WriteLine("Drop");
 
-        var data = e.Data.Get(DragAndDropPageViewModel.CustomFormat);
+        var data = e.Data.Get(InsertDragAndDropPageViewModel.CustomFormat);
 
         if (data is not TaskItem taskItem)
         {
@@ -98,7 +98,7 @@ public partial class InsertDragAndDropPageView : UserControl
             return;
         }
 
-        if (DataContext is not DragAndDropPageViewModel vm) return;
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
         vm.Drop(taskItem, (e.Source as Control)?.Name);
     }
 
