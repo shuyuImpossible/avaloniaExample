@@ -52,6 +52,7 @@ public partial class InsertDragAndDropPageView : UserControl
 
         if (DataContext is not InsertDragAndDropPageViewModel vm) return;
         vm.StartDrag(taskItem);
+        taskItem.Background = "Red";
         _isInDragDrop = true;
 
         GhostItem.IsVisible = true;
@@ -61,12 +62,13 @@ public partial class InsertDragAndDropPageView : UserControl
         var result = await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
         _isInDragDrop = false;
         Console.WriteLine($"DragAndDrop result: {result}");
+        vm.EndDrag();
         GhostItem.IsVisible = false;
     }
 
     private void DragOver(object? sender, DragEventArgs e)
     {
-        Console.WriteLine($"DragOver current time {DateTime.Now}");
+        // Console.WriteLine($"DragOver current time {DateTime.Now}");
 
         var currentPosition = e.GetPosition(MainContainer);
 
@@ -84,20 +86,42 @@ public partial class InsertDragAndDropPageView : UserControl
         {
             e.DragEffects = DragDropEffects.None;
         }
+
+        // // 获取鼠标相对于 ItemsRepeater 的位置
+        // Point mousePosition = e.GetPosition(ToDoItemsRepeater);
+        // var isMouseInToDoItemsRepeater = new Rect(ToDoItemsRepeater.Bounds.Size).Contains(mousePosition);
+        // if (!isMouseInToDoItemsRepeater) return;
+
+        // // 遍历 ItemsRepeater 中的所有子元素
+        // foreach (Control item in myItemsRepeater.GetRealizedElements())
+        // {
+        //     // 获取当前子元素的边界
+        //     Rect itemBounds = item.Bounds;
+
+        //     // 检查鼠标位置是否在子元素的边界内
+        //     if (itemBounds.Contains(mousePosition))
+        //     {
+        //         // 鼠标位于此 DataTemplate 对应的元素上
+        //         // 可以在这里添加相应的逻辑，比如改变元素样式
+        //         item.Background = Avalonia.Media.Brushes.LightBlue;
+        //     }
+        //     else
+        //     {
+        //         // 鼠标不在此元素上，恢复默认样式
+        //         item.Background = Avalonia.Media.Brushes.LightGray;
+        //     }
+        // }
     }
 
     private void Drop(object? sender, DragEventArgs e)
     {
-        Console.WriteLine("Drop");
-
         var data = e.Data.Get(InsertDragAndDropPageViewModel.CustomFormat);
-
+        Console.WriteLine("Drop");
         if (data is not TaskItem taskItem)
         {
             Console.WriteLine("No task item");
             return;
         }
-
         if (DataContext is not InsertDragAndDropPageViewModel vm) return;
         vm.Drop(taskItem, (e.Source as Control)?.Name);
     }
@@ -111,7 +135,7 @@ public partial class InsertDragAndDropPageView : UserControl
         if (mousePosition.X >= 0 && mousePosition.X <= MainContainer.Bounds.Width &&
             mousePosition.Y >= 0 && mousePosition.Y <= MainContainer.Bounds.Height)
         {
-            Console.WriteLine($"Mouse is inside MainContainer current time {DateTime.Now}");
+            // Console.WriteLine($"Mouse is inside MainContainer current time {DateTime.Now}");
             // if (_isInDragDrop)
             // {
             //     GhostItem.IsVisible = true;
@@ -119,7 +143,7 @@ public partial class InsertDragAndDropPageView : UserControl
         }
         else
         {
-            Console.WriteLine($"Mouse is outside MainContainer current time {DateTime.Now}");
+            // Console.WriteLine($"Mouse is outside MainContainer current time {DateTime.Now}");
             // if (_isInDragDrop)
             // {
             //     GhostItem.IsVisible = false;
@@ -143,4 +167,78 @@ public partial class InsertDragAndDropPageView : UserControl
         }
     }
 
+    private void OnPointerEnteredTodoItems(object? sender, PointerEventArgs e)
+    {
+        Console.WriteLine($"OnPointerEnteredTodoItems");
+
+        if (!_isInDragDrop) return;
+
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
+
+        var isInserted = false;
+        foreach (Control item in ToDoItemsRepeater.Children)
+        {
+            Console.WriteLine($"OnPointerEnteredTodoItems item: {item.GetType()}");
+            
+            if (item.DataContext is TaskItem taskItem)
+            {
+                Console.WriteLine($"TaskItem found: {taskItem.Title}");
+
+                var mousePosition = e.GetPosition(item);
+                if (mousePosition.X >= 0 && mousePosition.X <= ToDoItemsRepeater.Bounds.Width &&
+                    mousePosition.Y >= 0 && mousePosition.Y <= ToDoItemsRepeater.Bounds.Height)
+                {
+                    Console.WriteLine($"Mouse is inside {taskItem.Title}");
+                    vm.InsertBeforeItem(taskItem.Title);
+                    isInserted = true;
+                    //break;
+                }
+            }            
+        }
+        if (!isInserted)
+        {
+            vm.AddItem();
+        }
+    }
+
+    private void OnPointerExitedTodoItems(object? sender, PointerEventArgs e)
+    {
+        if (!_isInDragDrop) return;
+
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
+        vm.RemoveItem();
+    }
+
+    private void OnPointerMovedTodoItems(object? sender, PointerEventArgs e)
+    {
+        if (!_isInDragDrop) return;
+
+        if (DataContext is not InsertDragAndDropPageViewModel vm) return;
+
+        var isInserted = false;
+        foreach (Control item in ToDoItemsRepeater.Children)
+        {
+            Console.WriteLine($"OnPointerEnteredTodoItems item: {item.GetType()}");
+            
+            if (item.DataContext is TaskItem taskItem)
+            {
+                //Console.WriteLine($"TaskItem found: {taskItem.Title}");
+
+                var mousePosition = e.GetPosition(item);
+                if (mousePosition.X >= 0 && mousePosition.X <= ToDoItemsRepeater.Bounds.Width &&
+                    mousePosition.Y >= 0 && mousePosition.Y <= ToDoItemsRepeater.Bounds.Height)
+                {
+                    Console.WriteLine($"Mouse is inside {taskItem.Title} time {DateTime.Now}");
+                    vm.InsertBeforeItem(taskItem.Title);
+                    isInserted = true;
+                    break;
+                }
+            }            
+        }
+        if (!isInserted)
+        {
+            vm.RemoveItem();
+            vm.AddItem();
+        }
+    }
 }

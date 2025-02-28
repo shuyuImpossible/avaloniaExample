@@ -82,7 +82,36 @@ public partial class DragAndDropPageViewModel : ViewModelBase
     }
 }
 
-public record TaskItem(string TicketId, string Title, string Status = "todo")
+// public record TaskItem(string TicketId, string Title, string Status = "todo", string Background = "white")
+// {
+//     public TaskItem UpdateStatus(string newStatus) => this with { Status = newStatus };
+
+//     public TaskItem UpdateBackGround(string newBackground) => this with { Background = newBackground };
+// }
+
+
+public partial class TaskItem : ObservableObject
 {
-    public TaskItem UpdateStatus(string newStatus) => this with { Status = newStatus };
+    [ObservableProperty] public string _ticketId;
+    [ObservableProperty] public string _title;
+    [ObservableProperty] public string _status;
+    [ObservableProperty] public string _background;
+
+    public TaskItem(string ticketId, string title, string status = "todo", string background = "white")
+    {
+        TicketId = ticketId;
+        Title = title;
+        Status = status;
+        Background = background;
+    }
+
+    public TaskItem UpdateStatus(string newStatus)
+    {
+        return new TaskItem(TicketId, Title, newStatus, Background);
+    }
+
+    public TaskItem UpdateBackground(string newBackground)
+    {
+        return new TaskItem(TicketId, Title, Status, newBackground);
+    }
 }

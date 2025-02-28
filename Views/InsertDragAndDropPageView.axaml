@@ -19,12 +19,12 @@
 
         <!-- Todos column -->
         <Border Background="DarkGray" Height="450" Width="200" Name="TodoItems"
-                CornerRadius="5">
+                CornerRadius="5" PointerEntered="OnPointerEnteredTodoItems" PointerExited="OnPointerExitedTodoItems" PointerMoved="OnPointerMovedTodoItems">
           <StackPanel Orientation="Vertical">
             <TextBlock Text="TODO" TextAlignment="Center" Foreground="Black" FontWeight="Bold"
                        FontSize="22" />
             <!-- Tickets -->
-            <ItemsRepeater ItemsSource="{Binding TodoTasks}" Margin="15">
+            <ItemsRepeater Name="ToDoItemsRepeater" ItemsSource="{Binding TodoTasks}" Margin="15">
               <ItemsRepeater.Layout>
                 <StackLayout Spacing="10" />
               </ItemsRepeater.Layout>
@@ -38,9 +38,10 @@
                           BorderBrush="Black"
                           BorderThickness="1.5">
                     <StackPanel Orientation="Vertical">
-                      <TextBlock Text="{Binding Title}"
+                      <TextBlock Name="ToDoItemTextBlock" Text="{Binding Title}"
                                  Foreground="Black"
-                                 FontWeight="Medium" />
+                                 FontWeight="Medium" 
+                                 Background="{Binding Background}" />
                     </StackPanel>
                   </Border>
 
@@ -58,7 +59,7 @@
             <TextBlock Text="DONE" TextAlignment="Center" Foreground="Black" FontWeight="Bold"
                        FontSize="22" />
             <!-- Tickets -->
-            <ItemsRepeater ItemsSource="{Binding DoneTasks}" Margin="15">
+            <ItemsRepeater Name="DoneItemsRepeater" ItemsSource="{Binding DoneTasks}" Margin="15">
               <ItemsRepeater.Layout>
                 <StackLayout Spacing="10" />
               </ItemsRepeater.Layout>
@@ -74,7 +75,8 @@
                     <StackPanel Orientation="Vertical">
                       <TextBlock Text="{Binding Title}"
                                  Foreground="Black"
-                                 FontWeight="Medium" />
+                                 FontWeight="Medium"
+                                 Background="{Binding Background}" />
                     </StackPanel>
                   </Border>
 
